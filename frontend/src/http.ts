@@ -1,18 +1,18 @@
 import { webAPIUrl } from './AppSettings';
 
-export interface HttpRequest<REQB> {
+export interface HttpRequest<req> {
   path: string;
   method?: string;
-  body?: REQB;
+  body?: req;
   accessToken?: string;
 }
-export interface HttpResponse<RESB> extends Response {
-  parsedBody?: RESB;
+export interface HttpResponse<res> extends Response {
+  parsedBody?: res;
 }
 
-export const http = <REQB, RESB>(
-  config: HttpRequest<REQB>,
-): Promise<HttpResponse<RESB>> => {
+export const http = <req, res>(
+  config: HttpRequest<req>,
+): Promise<HttpResponse<res>> => {
   return new Promise((resolve, reject) => {
     const request = new Request(`${webAPIUrl}${config.path}`, {
       method: config.method || 'get',
@@ -24,7 +24,7 @@ export const http = <REQB, RESB>(
     if (config.accessToken) {
       request.headers.set('authorization', `bearer ${config.accessToken}`);
     }
-    let response: HttpResponse<RESB>;
+    let response: HttpResponse<res>;
     fetch(request)
       .then(res => {
         response = res;

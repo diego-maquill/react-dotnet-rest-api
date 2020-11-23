@@ -31,7 +31,7 @@ export const Header: FC<RouteComponentProps> = ({ history, location }) => {
         Q & A
       </Link>
       {!loading && (isAuthenticated ? (
-        <ul id="inforightlist">
+        <ul id="inforightlist3">
           <li id="userName">  {user!.name}</li>
           <UserIcon />
           <Link
@@ -41,10 +41,14 @@ export const Header: FC<RouteComponentProps> = ({ history, location }) => {
           </Link>
         </ul>
       ) : (
-          <Link to="/signin" id="buttomStyle" >
+          <ul id="inforightlist2">
             <UserIcon />
-            <span>Sign In</span>
-          </Link>
+            <Link
+              id="signIn"
+              to="/signin" >
+              Sign In
+            </Link>
+          </ul>
         ))}
     </div>
   );

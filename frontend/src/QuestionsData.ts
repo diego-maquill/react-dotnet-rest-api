@@ -1,6 +1,10 @@
 import { http } from './http';
 import { getAccessToken } from './Auth';
+/* 
 
+GET/SEARCH SECTION
+
+*/
 export interface QuestionData {
   questionId: number;
   title: string;
@@ -87,9 +91,20 @@ export const searchQuestions = async (
     return [];
   }
 };
+/* 
 
+POST SECTION
+
+*/
 export interface PostQuestionData {
   title: string;
+  content: string;
+  userName: string;
+  created: Date;
+}
+
+export interface PostAnswerData {
+  questionId: number;
   content: string;
   userName: string;
   created: Date;
@@ -115,14 +130,6 @@ export const postQuestion = async (
     return undefined;
   }
 };
-
-export interface PostAnswerData {
-  questionId: number;
-  content: string;
-  userName: string;
-  created: Date;
-}
-
 export const postAnswer = async (
   answer: PostAnswerData,
 ): Promise<AnswerData | undefined> => {
@@ -143,3 +150,33 @@ export const postAnswer = async (
     return undefined;
   }
 };
+
+/*
+
+UPDATE SECTION
+
+*/
+///////////////////////////////////////
+
+
+
+
+
+
+////////////////////////////////////////////
+/*
+
+DELETE SECTION
+
+*/
+///////////////////////////////////////////
+
+
+
+
+
+
+
+//////////////////////////////////////////////
+
+

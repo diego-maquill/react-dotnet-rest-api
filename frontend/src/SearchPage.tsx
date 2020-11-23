@@ -28,9 +28,9 @@ export const SearchPage: FC<RouteComponentProps> = ({ history, location }) => {
 
   const [questions, setQuestions] = useState<QuestionData[]>([]);
 
-  const searchParams = new URLSearchParams(location.search);
+ /*  const searchParams = new URLSearchParams(location.search);
   const search = searchParams.get('criteria') || '';
-
+ */
  // const { isAuthenticated, user, loading } = useAuth();
 
   useEffect(() => {
@@ -41,11 +41,11 @@ export const SearchPage: FC<RouteComponentProps> = ({ history, location }) => {
         setQuestions(foundResults);
       }
     };
-    doSearch(search);
+    doSearch(search1);
     return () => {
       cancelled = true;
     };
-  }, [search]);
+  }, [search1]);
 
   return (
     <Page title="Search Results">
@@ -63,11 +63,10 @@ export const SearchPage: FC<RouteComponentProps> = ({ history, location }) => {
       </div>
       </div>
       <div className="col-12 col-sm-12 col-md-6 ">
-           <div>
-      {search && (
-        <p id="results" > for "{search1}"  </p> )}
-        <QuestionList data={questions} />
-      </div>
+        <div>
+          {search1 && (<p id="results" > for "{search1}"  </p> )}
+          <QuestionList data={questions} />
+        </div>
       </div>
       </div>
     </Page>

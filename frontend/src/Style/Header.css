@@ -17,10 +17,20 @@
     color: gray;
     text-decoration: none;
 }
-#inforightlist{
+#inforightlist3{
     margin-bottom: 1px;
     display: grid;
     grid-template-columns: repeat(3, auto);
+    grid-gap: 5px;
+    list-style: none;
+    text-align: center;
+    justify-content: end;
+}
+#inforightlist2{
+    padding-left: 1px;
+    margin-bottom: 1px;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
     grid-gap: 5px;
     list-style: none;
     text-align: center;
@@ -36,5 +46,8 @@
 }
 
 #signOut{
+    align-items: center;
+}
+#signIn{
     align-items: center;
 }
