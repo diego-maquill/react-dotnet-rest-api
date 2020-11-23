@@ -1,13 +1,7 @@
 import { FC, useState, Fragment, useEffect } from 'react';
 import { Page } from './Page';
 import { RouteComponentProps } from 'react-router-dom';
-import {
-  QuestionData,
-  getQuestion,
-  postAnswer,
-  mapQuestionFromServer,
-  QuestionDataFromServer,
-} from './QuestionsData';
+import { QuestionData, getQuestion, postAnswer, mapQuestionFromServer, QuestionDataFromServer, } from './QuestionsData';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { gray3, gray6 } from './Styles';

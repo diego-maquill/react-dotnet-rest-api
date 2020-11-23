@@ -1,0 +1,21 @@
+#box1{
+    padding: 10px 0px;
+}
+#box2{
+    padding: 10px 0px;
+    font-size: 19px;
+}
+#box3 {
+    text-decoration: none;
+    color: gray;
+}
+#preview{
+    padding-bottom: 10px;
+    font-size: 15px;
+    color: gray;
+}
+#loggedInfo{
+    font-size: 12px;
+    font-style: italic;
+    color: gray;
+}

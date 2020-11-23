@@ -1,0 +1,21 @@
+#page{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#questionLoading{
+    font-size: 16px;
+    font-style: italic;
+}
+#box{
+    box-sizing: border-box;
+    font-family:"'Segoe UI', 'Helvetica Neue',sans-serif";
+    font-size: 16px;
+    padding: 8px 10px;
+    border: 1px solid;
+    border-radius: 3px;
+    color: gray;
+    background-color: white;
+    width: 200px;
+    height: 80px;
+}

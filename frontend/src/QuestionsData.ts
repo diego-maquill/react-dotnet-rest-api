@@ -33,9 +33,9 @@ export const mapQuestionFromServer = (
   created: new Date(question.created),
   answers: question.answers
     ? question.answers.map(answer => ({
-        ...answer,
-        created: new Date(answer.created),
-      }))
+      ...answer,
+      created: new Date(answer.created),
+    }))
     : [],
 });
 

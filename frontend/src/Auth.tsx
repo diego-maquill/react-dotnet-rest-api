@@ -1,10 +1,5 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  createContext,
-  FC,
-} from 'react';
+import React, { useState, useEffect, useContext, createContext, FC } from 'react';
+
 import createAuth0Client from '@auth0/auth0-spa-js';
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import { authSettings } from './AppSettings';
@@ -61,6 +56,9 @@ export const AuthProvider: FC = ({ children }) => {
   }, []);
 
   const getAuth0ClientFromState = () => {
+    if (!isAuthenticated) {
+      window.location.replace(window.location.origin);
+    }
     if (auth0Client === undefined) {
       throw new Error('Auth0 client not set');
     }
@@ -75,7 +73,8 @@ export const AuthProvider: FC = ({ children }) => {
         signIn: () => getAuth0ClientFromState().loginWithRedirect(),
         signOut: () => getAuth0ClientFromState().logout({
           client_id: authSettings.client_id,
-          returnTo: window.location.origin + '/signout-callback',
+          returnTo: window.location.origin,
+          //returnTo: window.location.origin + '/signout-callback',
         }),
         loading,
       }}

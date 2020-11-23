@@ -14,6 +14,9 @@ export interface Errors {
 export interface Touched {
   [key: string]: boolean;
 }
+/* export interface onSubmit {
+  [key: string]: any
+} */
 
 interface FormContextProps {
   values: Values;
@@ -62,7 +65,6 @@ interface Props {
   successMessage?: string;
   failureMessage?: string;
 }
-
 export const Form: FC<Props> = ({
   submitCaption,
   children,
@@ -146,44 +148,19 @@ export const Form: FC<Props> = ({
       <form noValidate={true} onSubmit={handleSubmit}>
         <fieldset
           disabled={submitting || (submitted && !submitError)}
-          css={css`
-            margin: 10px auto 0 auto;
-            padding: 30px;
-            width: 350px;
-            background-color: ${gray6};
-            border-radius: 4px;
-            border: 1px solid ${gray5};
-            box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.16);
-          `}
-        >
+          id="fieldset"     >
           {children}
-          <div
-            css={css`
-              margin: 30px 0px 0px 0px;
-              padding: 20px 0px 0px 0px;
-              border-top: 1px solid ${gray5};
-            `}
-          >
+          <div id="children"          >
             <PrimaryButton type="submit">{submitCaption}</PrimaryButton>
           </div>
           {submitted && submitError && (
-            <p
-              css={css`
-                color: red;
-              `}
-            >
+            <p id="failure"            >
               {failureMessage}
-            </p>
-          )}
+            </p>)}
           {submitted && !submitError && (
-            <p
-              css={css`
-                color: green;
-              `}
-            >
+            <p id="success"            >
               {successMessage}
-            </p>
-          )}
+            </p>)}
         </fieldset>
       </form>
     </FormContext.Provider>

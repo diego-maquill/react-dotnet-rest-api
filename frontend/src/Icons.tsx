@@ -4,11 +4,8 @@ import user from './user.svg';
 
 export const UserIcon = () => (
   <img
+    id="icon"
     src={user}
     alt="User"
-    css={css`
-      width: 12px;
-      opacity: 0.6;
-    `}
   />
 );

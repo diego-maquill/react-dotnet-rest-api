@@ -1,5 +1,7 @@
+
 import React, { lazy, Suspense } from 'react';
 import { HeaderWithRouter as Header } from './Header';
+//import { SearchBody, SearchWithRouter as Search } from './Searchbody'
 import { HomePage } from './HomePage';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -12,19 +14,14 @@ import { NotFoundPage } from './NotFoundPage';
 import { QuestionPage } from './QuestionPage';
 import { AuthProvider } from './Auth';
 import { AuthorizedPage } from './AuthorizedPage';
+
 const AskPage = lazy(() => import('./AskPage'));
 
 const App: React.FC = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div
-          css={css`
-            font-family: ${fontFamily};
-            font-size: ${fontSize};
-            color: ${gray2};
-          `}
-        >
+        <div id="browserRouter">
           <Header />
           <Switch>
             <Redirect from="/home" to="/" />
@@ -32,17 +29,7 @@ const App: React.FC = () => {
             <Route path="/search" component={SearchPage} />
             <Route path="/ask">
               <Suspense
-                fallback={
-                  <div
-                    css={css`
-                      margin-top: 100px;
-                      text-align: center;
-                    `}
-                  >
-                    Loading...
-                  </div>
-                }
-              >
+                fallback={<div id="fallback">Loading...</div>}>
                 <AuthorizedPage>
                   <AskPage />
                 </AuthorizedPage>
