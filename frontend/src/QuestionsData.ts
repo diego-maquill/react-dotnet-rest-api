@@ -1,9 +1,7 @@
 import { http } from './http';
 import { getAccessToken } from './Auth';
 /* 
-
 GET/SEARCH SECTION
-
 */
 export interface QuestionData {
   questionId: number;
@@ -30,6 +28,13 @@ export interface AnswerData {
   created: Date;
 }
 
+export interface AnswerDataFromServer {
+  answerId: number;
+  content: string;
+  userName: string;
+  created: Date;
+}
+
 export const mapQuestionFromServer = (
   question: QuestionDataFromServer,
 ): QuestionData => ({
@@ -42,6 +47,13 @@ export const mapQuestionFromServer = (
     }))
     : [],
 });
+
+export const mapAnswerFromServer = (
+  answer: AnswerDataFromServer,
+): AnswerData => ({
+  ...answer,
+});
+
 
 export const getUnansweredQuestions = async (): Promise<QuestionData[]> => {
   try {
@@ -165,18 +177,46 @@ UPDATE SECTION
 
 ////////////////////////////////////////////
 /*
-
 DELETE SECTION
-
 */
+
+export const deleteQuestion = async (
+  questionId: number,
+): Promise<QuestionData[]> => {
+  const accessToken = await getAccessToken();
+  try {
+    const result = await http<undefined, QuestionDataFromServer[]>({
+      path: `/delete?question=${questionId}`,
+      method: `delete`,
+      accessToken,
+    });
+    if (result.ok && result.parsedBody) {
+      return result.parsedBody.map(mapQuestionFromServer);
+    } else {
+      return [];
+    }
+  } catch (ex) {
+    return [];
+  }
+};
 ///////////////////////////////////////////
-
-
-
-
-
-
-
+export const deleteAnswer = async (
+  answerId: number,
+): Promise<AnswerData[]> => {
+  const accessToken = await getAccessToken();
+  try {
+    const result = await http<undefined, AnswerDataFromServer[]>({
+      path: `/delete?answer=${answerId}`,
+      method: `delete`,
+      accessToken,
+    });
+    if (result.ok && result.parsedBody) {
+      return result.parsedBody.map(mapAnswerFromServer);
+    } else {
+      return [];
+    }
+  } catch (ex) {
+    return [];
+  }
+};
 //////////////////////////////////////////////
-
-
