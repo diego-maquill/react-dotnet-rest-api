@@ -182,41 +182,43 @@ DELETE SECTION
 
 export const deleteQuestion = async (
   questionId: number,
-): Promise<QuestionData[]> => {
+): Promise<QuestionData | null> => {
   const accessToken = await getAccessToken();
   try {
-    const result = await http<undefined, QuestionDataFromServer[]>({
+    const result = await http<undefined, QuestionDataFromServer>({
       path: `/delete?question=${questionId}`,
       method: `delete`,
       accessToken,
     });
-    if (result.ok && result.parsedBody) {
-      return result.parsedBody.map(mapQuestionFromServer);
+    if (result.parsedBody) {
+      return mapQuestionFromServer(result.parsedBody);
+      //return result.parsedBody.map(mapQuestionFromServer);
     } else {
-      return [];
+      return null;
     }
   } catch (ex) {
-    return [];
+    return null;
   }
 };
 ///////////////////////////////////////////
 export const deleteAnswer = async (
   answerId: number,
-): Promise<AnswerData[]> => {
+): Promise<AnswerData | null> => {
   const accessToken = await getAccessToken();
   try {
-    const result = await http<undefined, AnswerDataFromServer[]>({
+    const result = await http<undefined, AnswerData>({
       path: `/delete?answer=${answerId}`,
       method: `delete`,
       accessToken,
     });
-    if (result.ok && result.parsedBody) {
-      return result.parsedBody.map(mapAnswerFromServer);
+    if (result.parsedBody) {
+      return result.parsedBody
+      //return result.parsedBody.map(mapAnswerFromServer);
     } else {
-      return [];
+      return null;
     }
   } catch (ex) {
-    return [];
+    return null;
   }
 };
 //////////////////////////////////////////////

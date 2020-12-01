@@ -1,20 +1,17 @@
-import { FC, useState, Fragment, useEffect } from 'react';
+import { FC, useState, Fragment, FormEvent, useEffect } from 'react';
 import { Page } from './Page';
-import { RouteComponentProps } from 'react-router-dom';
-import { QuestionData, getQuestion, postAnswer, mapQuestionFromServer, QuestionDataFromServer, } from './QuestionsData';
+import { RouteComponentProps, Redirect } from 'react-router-dom';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import { gray3, gray6 } from './Styles';
+//import { gray3, gray6 } from './Styles';
 import { AnswerList } from './AnswerList';
 import { Form, required, minLength, Values } from './Form';
 import { Field } from './Field';
-import {
-  HubConnectionBuilder,
-  HubConnectionState,
-  HubConnection,
-} from '@aspnet/signalr';
+import { HubConnectionBuilder, HubConnectionState, HubConnection } from '@aspnet/signalr';
 import { server } from './AppSettings';
 import { useAuth } from './Auth';
+import { QuestionData, getQuestion, postAnswer, deleteAnswer, mapQuestionFromServer, QuestionDataFromServer, } from './QuestionsData';
+import "./Style/QuestionPage.css"
 
 interface RouteParams {
   questionId: string;
@@ -23,13 +20,13 @@ export const QuestionPage: FC<RouteComponentProps<RouteParams>> = ({
   match,
 }) => {
   const [question, setQuestion] = useState<QuestionData | null>(null);
-
+  const { isAuthenticated } = useAuth();
+  ////////////////////////////////////////////////////////////////////
   const setUpSignalRConnection = async (questionId: number) => {
     const connection = new HubConnectionBuilder()
       .withUrl(`${server}/questionshub`)
       .withAutomaticReconnect()
       .build();
-
     connection.on('Message', (message: string) => {
       console.log('Message', message);
     });
@@ -37,7 +34,6 @@ export const QuestionPage: FC<RouteComponentProps<RouteParams>> = ({
       console.log('ReceiveQuestion', question);
       setQuestion(mapQuestionFromServer(question));
     });
-
     async function start() {
       try {
         await connection.start();
@@ -55,7 +51,7 @@ export const QuestionPage: FC<RouteComponentProps<RouteParams>> = ({
 
     return connection;
   };
-
+  //////////////////////////////
   const cleanUpSignalRConnection = (
     questionId: number,
     connection: HubConnection,
@@ -103,6 +99,9 @@ export const QuestionPage: FC<RouteComponentProps<RouteParams>> = ({
     };
   }, [match.params.questionId]);
 
+  const [redirect, setRedirect] = useState(false);
+  const [answer, setAnswer] = useState(false);
+
   const handleSubmit = async (values: Values) => {
     const result = await postAnswer({
       questionId: question!.questionId,
@@ -110,74 +109,53 @@ export const QuestionPage: FC<RouteComponentProps<RouteParams>> = ({
       userName: 'Fred',
       created: new Date(),
     });
-
+    setRedirect(true);
     return { success: result ? true : false };
   };
+  if (redirect) window.location.reload();
 
-  const { isAuthenticated } = useAuth();
+  const handleDelete = async (questionId: number) => {
+    const eraseAnswer = await deleteAnswer(questionId);
+    if (!answer) {
+      return eraseAnswer;
+    }
+  };
+
 
   return (
     <Page>
-      <div
-        css={css`
-          background-color: white;
-          padding: 15px 20px 20px 20px;
-          border-radius: 4px;
-          border: 1px solid ${gray6};
-          box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.16);
-        `}
-      >
-        <div
-          css={css`
-            font-size: 19px;
-            font-weight: bold;
-            margin: 10px 0px 5px;
-          `}
-        >
+      <div id="frame1" >
+        <div id="frame2" >
           {question === null ? '' : question.title}
         </div>
         {question !== null && (
           <Fragment>
-            <p
-              css={css`
-                margin-top: 0px;
-                background-color: white;
-              `}
-            >
+            <p id="fragment1" >
               {question.content}
             </p>
-            <div
-              css={css`
-                font-size: 12px;
-                font-style: italic;
-                color: ${gray3};
-              `}
-            >
+            <div id="question1">
               {`Asked by ${question.userName} on
-          ${question.created.toLocaleDateString()} 
-          ${question.created.toLocaleTimeString()}`}
+              ${question.created.toLocaleDateString()}
+              ${question.created.toLocaleTimeString()}`}
             </div>
             <AnswerList data={question.answers} />
             {isAuthenticated && (
-              <div
-                css={css`
-                  margin-top: 20px;
-                `}
-              >
+              <div id="aythentication" >
+                {/*     ///////////////////////////////// */}
                 <Form
                   submitCaption="Submit Your Answer"
                   validationRules={{
                     content: [
                       { validator: required },
-                      { validator: minLength, arg: 50 },
+                      { validator: minLength, arg: 10 },
                     ],
                   }}
                   onSubmit={handleSubmit}
                   failureMessage="There was a problem with your answer"
-                  successMessage="Your answer was successfully submitted"
-                >
+                  successMessage="Your answer was successfully submitted" >
                   <Field name="content" label="Your Answer" type="TextArea" />
                 </Form>
+                {/* ///////////////////////////////// */}
               </div>
             )}
           </Fragment>

@@ -18,10 +18,14 @@ export const AskPage = () => {
       created: new Date(),
     });
     setRedirect(true);
-    return { success: question ? true : false };
+    if (!question) {
+      return { success: false }
+    } else {
+      return { success: true }
+    }
+    //return { success: question ? true : false };
   };
-  if (redirect)
-  { return <Redirect from="/home" to="/" /> }
+  if (redirect) { return <Redirect from="/home" to="/" /> }
 
   return (
     <Page title="Ask a Question">
@@ -38,7 +42,6 @@ export const AskPage = () => {
         <Field name="title" label="Title" />
         <Field name="content" label="Content" type="TextArea" />
       </Form>
-
     </Page>
   );
 };
