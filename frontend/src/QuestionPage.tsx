@@ -10,7 +10,7 @@ import { Field } from './Field';
 import { HubConnectionBuilder, HubConnectionState, HubConnection } from '@aspnet/signalr';
 import { server } from './AppSettings';
 import { useAuth } from './Auth';
-import { QuestionData, getQuestion, postAnswer, deleteAnswer, mapQuestionFromServer, QuestionDataFromServer, } from './QuestionsData';
+import { QuestionData, getQuestion, postAnswer, AnswerData, deleteAnswer, mapQuestionFromServer, QuestionDataFromServer, } from './QuestionsData';
 import "./Style/QuestionPage.css"
 
 interface RouteParams {
@@ -114,11 +114,20 @@ export const QuestionPage: FC<RouteComponentProps<RouteParams>> = ({
   };
   if (redirect) window.location.reload();
 
-  const handleDelete = async (questionId: number) => {
-    const eraseAnswer = await deleteAnswer(questionId);
-    if (!answer) {
-      return eraseAnswer;
+
+  const handleDelete = async (answer: AnswerData) => {
+
+    let filteredAnswers = question && question.answers.filter((ans) => {
+      return ans.answerId !== answer.answerId;
+    });
+
+    if (question) {
+      setQuestion({
+        ...question,
+        answers: filteredAnswers || []
+      });
     }
+    await deleteAnswer(answer.answerId);
   };
 
 
@@ -138,7 +147,7 @@ export const QuestionPage: FC<RouteComponentProps<RouteParams>> = ({
               ${question.created.toLocaleDateString()}
               ${question.created.toLocaleTimeString()}`}
             </div>
-            <AnswerList data={question.answers} />
+            <AnswerList onDelete={handleDelete} data={question.answers} />
             {isAuthenticated && (
               <div id="aythentication" >
                 {/*     ///////////////////////////////// */}

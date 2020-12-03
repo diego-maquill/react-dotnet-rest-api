@@ -8,14 +8,14 @@ import "./Style/AnswerList.css"
 
 interface Props {
   data: AnswerData[];
+  onDelete: (answer: AnswerData) => void;
 }
 
-export const AnswerList: FC<Props> = ({ data }) => (
+export const AnswerList: FC<Props> = ({ data, onDelete }) => (
   <ul >
     {data.map(answer => (
-      <li id="data"
-        key={answer.answerId} >
-        <Answer data={answer} />
+      <li id="data" key={answer.answerId} >
+        <Answer onDelete={onDelete} data={answer} />
       </li>
     ))}
   </ul>

@@ -3,20 +3,42 @@ import { FC } from 'react';
 import { css, jsx } from '@emotion/core';
 import { AnswerData } from './QuestionsData';
 import { gray3 } from './Styles';
-import "./Style/Answer.css"
 
 interface Props {
   data: AnswerData;
+  onDelete: (answer: AnswerData) => void;
 }
-export const Answer: FC<Props> = ({ data }) => (
-  <div id="answerData" >
-    <div id="data1"   >
+
+
+export const Answer: FC<Props> = ({ data, onDelete }) => (
+  <div
+    css={css`
+      padding: 10px 0px;
+    `}
+  >
+    <div
+      css={css`
+        padding: 10px 0px;
+        font-size: 13px;
+      `}
+    >
       {data.content}
     </div>
-    <div id="data2">
+    <div
+      css={css`
+        font-size: 12px;
+        font-style: italic;
+        color: ${gray3};
+      `}
+    >
       {`Answered by ${data.userName} on
       ${data.created.toLocaleDateString()} 
       ${data.created.toLocaleTimeString()}`}
+    </div>
+    <div>
+      <button onClick={() => {
+        onDelete(data);
+      }}>delete</button>
     </div>
   </div>
 );

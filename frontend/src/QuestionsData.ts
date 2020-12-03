@@ -203,7 +203,7 @@ export const deleteQuestion = async (
 ///////////////////////////////////////////
 export const deleteAnswer = async (
   answerId: number,
-): Promise<AnswerData | null> => {
+): Promise<AnswerData | undefined> => {
   const accessToken = await getAccessToken();
   try {
     const result = await http<undefined, AnswerData>({
@@ -215,10 +215,10 @@ export const deleteAnswer = async (
       return result.parsedBody
       //return result.parsedBody.map(mapAnswerFromServer);
     } else {
-      return null;
+      return undefined;
     }
   } catch (ex) {
-    return null;
+    return undefined;
   }
 };
 //////////////////////////////////////////////
