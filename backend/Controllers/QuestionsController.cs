@@ -26,14 +26,18 @@ namespace QandA.Controllers
         private readonly IQuestionCache _cache;
         private readonly IHttpClientFactory _clientFactory;
         private readonly string _auth0UserInfo;
+        ///
+      //  private readonly IAnswerCache _cacheAnswer;
 
-        public QuestionsController(IDataRepository dataRepository, IHubContext<QuestionsHub> questionHubContext, IQuestionCache questionCache, IHttpClientFactory clientFactory, IConfiguration configuration)
+        public QuestionsController(IDataRepository dataRepository, IHubContext<QuestionsHub> questionHubContext, IQuestionCache questionCache, IHttpClientFactory clientFactory, IConfiguration configuration/*, IAnswerCache answerCache*/)
         {
             _dataRepository = dataRepository;
             _questionHubContext = questionHubContext;
             _cache = questionCache;
             _clientFactory = clientFactory;
             _auth0UserInfo = $"{configuration["Auth0:Authority"]}userinfo";
+            ///
+        //    _cacheAnswer = answerCache;
         }
 
         [HttpGet]
@@ -55,7 +59,19 @@ namespace QandA.Controllers
                 return await _dataRepository.GetQuestionsBySearchWithPaging(search, page, pageSize);
             }
         }
-
+        [HttpGet("all-answers")]
+        public async Task<IEnumerable<AnswerGetManyResponse>> GetAnswers(string search, int page = 1, int pageSize = 20)
+        {
+            if (string.IsNullOrEmpty(search))
+            {
+                return await _dataRepository.GetAnswers(); ;
+                //       return await _dataRepository.GetQuestions();
+            }
+            else
+            {
+                return await _dataRepository.GetAnswersBySearchWithPaging(search, page, pageSize);
+            }
+        }
         [HttpGet("unanswered")]
         public async Task<IEnumerable<QuestionGetManyResponse>> GetUnansweredQuestions()
         {
@@ -78,6 +94,22 @@ namespace QandA.Controllers
             return question;
         }
 
+        /*         [HttpGet("{answerId}")]
+                public async Task<ActionResult<AnswerGetResponse>> GetAnswer(int answerId)
+                {
+                    var answer = _cacheAnswer.Get(answerId);
+                    if (answer == null)
+                    {
+                        answer = await _dataRepository.GetAnswer(answerId);
+                        if (answer == null)
+                        {
+                            return NotFound();
+                        }
+                        _cacheAnswer.Set(answer);
+                    }
+                    return answer;
+                } */
+
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<QuestionGetSingleResponse>> PostQuestion(QuestionPostRequest questionPostRequest)
@@ -94,36 +126,6 @@ namespace QandA.Controllers
             {
                 questionId = savedQuestion.QuestionId
             }, savedQuestion);
-        }
-
-        [Authorize(Policy = "MustBeQuestionAuthor")]
-        [HttpPut("{questionId}")]
-        public async Task<ActionResult<QuestionGetSingleResponse>> PutQuestion(int questionId, QuestionPutRequest questionPutRequest)
-        {
-            var question = await _dataRepository.GetQuestion(questionId);
-            if (question == null)
-            {
-                return NotFound();
-            }
-            questionPutRequest.Title = string.IsNullOrEmpty(questionPutRequest.Title) ? question.Title : questionPutRequest.Title;
-            questionPutRequest.Content = string.IsNullOrEmpty(questionPutRequest.Content) ? question.Content : questionPutRequest.Content;
-            var savedQuestion = await _dataRepository.PutQuestion(questionId, questionPutRequest);
-            _cache.Remove(savedQuestion.QuestionId);
-            return savedQuestion;
-        }
-
-        [Authorize(Policy = "MustBeQuestionAuthor")]
-        [HttpDelete("{questionId}")]
-        public async Task<ActionResult> DeleteQuestion(int questionId)
-        {
-            var question = await _dataRepository.GetQuestion(questionId);
-            if (question == null)
-            {
-                return NotFound();
-            }
-            await _dataRepository.DeleteQuestion(questionId);
-            _cache.Remove(questionId);
-            return NoContent();
         }
 
         [Authorize]
@@ -173,6 +175,52 @@ namespace QandA.Controllers
             {
                 return "";
             }
+        }
+        ////////////////////////////
+        [Authorize(Policy = "MustBeQuestionAuthor")]
+        [HttpDelete("{answerId}")]
+        public async Task<ActionResult> DeleteAnswer(int answerId)
+        {
+            var question = await _dataRepository.GetAnswer(answerId);
+            if (question == null)
+            {
+                return NotFound();
+            }
+            await _dataRepository.DeleteAnswer(answerId);
+            //   _cacheAnswer.Remove(answerId);
+            return NoContent();
+        }
+
+        [Authorize(Policy = "MustBeQuestionAuthor")]
+        [HttpDelete("{questionId}")]
+        public async Task<ActionResult> DeleteQuestion(int questionId)
+        {
+            var question = await _dataRepository.GetQuestion(questionId);
+            if (question == null)
+            {
+                return NotFound();
+            }
+            await _dataRepository.DeleteQuestion(questionId);
+            _cache.Remove(questionId);
+            return NoContent();
+        }
+
+
+        [Authorize(Policy = "MustBeQuestionAuthor")]
+        [HttpPut("{questionId}")]
+
+        public async Task<ActionResult<QuestionGetSingleResponse>> PutQuestion(int questionId, QuestionPutRequest questionPutRequest)
+        {
+            var question = await _dataRepository.GetQuestion(questionId);
+            if (question == null)
+            {
+                return NotFound();
+            }
+            questionPutRequest.Title = string.IsNullOrEmpty(questionPutRequest.Title) ? question.Title : questionPutRequest.Title;
+            questionPutRequest.Content = string.IsNullOrEmpty(questionPutRequest.Content) ? question.Content : questionPutRequest.Content;
+            var savedQuestion = await _dataRepository.PutQuestion(questionId, questionPutRequest);
+            _cache.Remove(savedQuestion.QuestionId);
+            return savedQuestion;
         }
 
     }

@@ -18,13 +18,14 @@ namespace QandA.Data
         {
             _connectionString = configuration["ConnectionStrings:DefaultConnection"];
         }
+
         public async Task<AnswerGetResponse> GetAnswer(int answerId)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
                 return await connection.QueryFirstOrDefaultAsync<AnswerGetResponse>(@"EXEC dbo.Answer_Get_ByAnswerId 
-                    @AnswerId = @AnswerId", 
+                    @AnswerId = @AnswerId",
                     new { AnswerId = answerId });
             }
         }
@@ -48,7 +49,27 @@ namespace QandA.Data
                 }
             }
         }
-
+        /////
+        public async Task<IEnumerable<AnswerGetManyResponse>> GetAnswers()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                return await connection.QueryAsync<AnswerGetManyResponse>("EXEC dbo.Answer_GetMany");
+            }
+        }
+        public async Task<IEnumerable<AnswerGetManyResponse>> GetAnswersBySearchWithPaging(string search, int pageNumber, int pageSize)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var parameters = new { Search = search, PageNumber = pageNumber, PageSize = pageSize };
+                return await connection.QueryAsync<AnswerGetManyResponse>(@"EXEC dbo.Answer_GetMany_BySearch_WithPaging
+                    @Search = @Search, @PageNumber = @PageNumber, @PageSize = @PageSize",
+                    parameters);
+            }
+        }
+        /////
         public async Task<IEnumerable<QuestionGetManyResponse>> GetQuestions()
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -57,6 +78,7 @@ namespace QandA.Data
                 return await connection.QueryAsync<QuestionGetManyResponse>("EXEC dbo.Question_GetMany");
             }
         }
+
 
         public async Task<IEnumerable<QuestionGetManyResponse>> GetQuestionsWithAnswers()
         {
@@ -91,7 +113,7 @@ namespace QandA.Data
             {
                 await connection.OpenAsync();
                 return await connection.QueryAsync<QuestionGetManyResponse>(@"EXEC dbo.Question_GetMany_BySearch 
-                    @Search = @Search", 
+                    @Search = @Search",
                     new { Search = search });
             }
         }
@@ -103,7 +125,7 @@ namespace QandA.Data
                 await connection.OpenAsync();
                 var parameters = new { Search = search, PageNumber = pageNumber, PageSize = pageSize };
                 return await connection.QueryAsync<QuestionGetManyResponse>(@"EXEC dbo.Question_GetMany_BySearch_WithPaging
-                    @Search = @Search, @PageNumber = @PageNumber, @PageSize = @PageSize", 
+                    @Search = @Search, @PageNumber = @PageNumber, @PageSize = @PageSize",
                     parameters);
             }
         }
@@ -132,7 +154,7 @@ namespace QandA.Data
             {
                 await connection.OpenAsync();
                 return await connection.QueryFirstAsync<bool>(@"EXEC dbo.Question_Exists 
-                    @QuestionId = @QuestionId", 
+                    @QuestionId = @QuestionId",
                     new { QuestionId = questionId });
             }
         }
@@ -146,7 +168,7 @@ namespace QandA.Data
                 var questionId = await connection.QueryFirstAsync<int>(@"EXEC dbo.Question_Post 
                     @Title = @Title, @Content = @Content, 
                     @UserId = @UserId,  @UserName = @UserName, 
-                    @Created = @Created", 
+                    @Created = @Created",
                     question);
                 return await GetQuestion(questionId);
             }
@@ -163,25 +185,33 @@ namespace QandA.Data
                 return await GetQuestion(questionId);
             }
         }
-
         public async Task DeleteQuestion(int questionId)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
                 await connection.ExecuteAsync(@"EXEC dbo.Question_Delete 
-                    @QuestionId = @QuestionId", 
+                    @QuestionId = @QuestionId",
                     new { QuestionId = questionId });
             }
         }
-
+        public async Task DeleteAnswer(int answerId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                await connection.ExecuteAsync(@"EXEC dbo.Answer_Delete 
+                    @AnswerId = @AnswerId",
+                    new { AnswerId = answerId });
+            }
+        }
         public async Task<AnswerGetResponse> PostAnswer(AnswerPostFullRequest answer)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
                 return await connection.QueryFirstAsync<AnswerGetResponse>(@"EXEC dbo.Answer_Post 
-                    @QuestionId = @QuestionId, @Content = @Content, @UserId = @UserId, @UserName = @UserName, @Created = @Created", 
+                    @QuestionId = @QuestionId, @Content = @Content, @UserId = @UserId, @UserName = @UserName, @Created = @Created",
                     answer);
             }
         }

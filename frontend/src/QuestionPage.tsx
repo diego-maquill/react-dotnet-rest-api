@@ -116,11 +116,9 @@ export const QuestionPage: FC<RouteComponentProps<RouteParams>> = ({
 
 
   const handleDelete = async (answer: AnswerData) => {
-
     let filteredAnswers = question && question.answers.filter((ans) => {
       return ans.answerId !== answer.answerId;
     });
-
     if (question) {
       setQuestion({
         ...question,

@@ -170,16 +170,32 @@ UPDATE SECTION
 */
 ///////////////////////////////////////
 
-
-
-
-
-
 ////////////////////////////////////////////
 /*
 DELETE SECTION
 */
-
+///////////////////////////////////////////
+export const deleteAnswer = async (
+  answerId: number,
+): Promise<AnswerData | null> => {
+  const accessToken = await getAccessToken();
+  try {
+    const result = await http<undefined, AnswerData>({
+      path: `/delete?answer=${answerId}`,
+      method: `delete`,
+      accessToken,
+    });
+    if (result.parsedBody) {
+      return result.parsedBody
+      //return result.parsedBody.map(mapAnswerFromServer);
+    } else {
+      return null;
+    }
+  } catch (ex) {
+    return null;
+  }
+};
+//////////////////////////////////////////////
 export const deleteQuestion = async (
   questionId: number,
 ): Promise<QuestionData | null> => {
@@ -200,25 +216,3 @@ export const deleteQuestion = async (
     return null;
   }
 };
-///////////////////////////////////////////
-export const deleteAnswer = async (
-  answerId: number,
-): Promise<AnswerData | undefined> => {
-  const accessToken = await getAccessToken();
-  try {
-    const result = await http<undefined, AnswerData>({
-      path: `/delete?answer=${answerId}`,
-      method: `delete`,
-      accessToken,
-    });
-    if (result.parsedBody) {
-      return result.parsedBody
-      //return result.parsedBody.map(mapAnswerFromServer);
-    } else {
-      return undefined;
-    }
-  } catch (ex) {
-    return undefined;
-  }
-};
-//////////////////////////////////////////////

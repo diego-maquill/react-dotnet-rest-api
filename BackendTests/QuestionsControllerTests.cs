@@ -35,11 +35,11 @@ namespace BackendTests
               .Returns(() => Task.FromResult(mockQuestions.AsEnumerable()));
 
             var mockConfigurationRoot = new Mock<IConfigurationRoot>();
-            mockConfigurationRoot.SetupGet(config => 
+            mockConfigurationRoot.SetupGet(config =>
                 config[It.IsAny<string>()]).Returns("some setting");
 
             var questionsController = new QuestionsController(
-                mockDataRepository.Object, null, 
+                mockDataRepository.Object, null,
                 null, null, mockConfigurationRoot.Object);
 
             var result = await questionsController.GetQuestions(null, false);
@@ -71,7 +71,7 @@ namespace BackendTests
                 config[It.IsAny<string>()]).Returns("some setting");
 
             var questionsController = new QuestionsController(
-                mockDataRepository.Object, null, 
+                mockDataRepository.Object, null,
                 null, null, mockConfigurationRoot.Object);
 
             var result = await questionsController.GetQuestions("Test", false);
@@ -98,11 +98,11 @@ namespace BackendTests
                 config[It.IsAny<string>()]).Returns("some setting");
 
             var questionsController = new QuestionsController(
-                mockDataRepository.Object, null, mockQuestionCache.Object, 
+                mockDataRepository.Object, null, mockQuestionCache.Object,
                 null, mockConfigurationRoot.Object);
 
             var result = await questionsController.GetQuestion(1);
-            
+
             var actionResult = Assert.IsType<ActionResult<QuestionGetSingleResponse>>(result);
             Assert.IsType<NotFoundResult>(actionResult.Result);
         }
@@ -131,7 +131,7 @@ namespace BackendTests
                 config[It.IsAny<string>()]).Returns("some setting");
 
             var questionsController = new QuestionsController(
-                mockDataRepository.Object, null, mockQuestionCache.Object, 
+                mockDataRepository.Object, null, mockQuestionCache.Object,
                 null, mockConfigurationRoot.Object);
 
             var result = await questionsController.GetQuestion(1);

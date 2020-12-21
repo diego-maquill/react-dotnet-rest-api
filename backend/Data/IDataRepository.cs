@@ -16,10 +16,17 @@ namespace QandA.Data
         Task<IEnumerable<QuestionGetManyResponse>> GetUnansweredQuestionsAsync();
         Task<QuestionGetSingleResponse> GetQuestion(int questionId);
         Task<bool> QuestionExists(int questionId);
+        ////
+        Task<IEnumerable<AnswerGetManyResponse>> GetAnswers();
+        Task<IEnumerable<AnswerGetManyResponse>> GetAnswersBySearchWithPaging(string search, int pageNumber, int pageSize);
+        /////
         Task<AnswerGetResponse> GetAnswer(int answerId);
         Task<QuestionGetSingleResponse> PostQuestion(QuestionPostFullRequest question);
         Task<QuestionGetSingleResponse> PutQuestion(int questionId, QuestionPutRequest question);
         Task DeleteQuestion(int questionId);
+        //
+        Task DeleteAnswer(int answerId);
+        //
         Task<AnswerGetResponse> PostAnswer(AnswerPostFullRequest answer);
     }
 }

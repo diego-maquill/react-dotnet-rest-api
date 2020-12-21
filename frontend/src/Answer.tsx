@@ -8,8 +8,6 @@ interface Props {
   data: AnswerData;
   onDelete: (answer: AnswerData) => void;
 }
-
-
 export const Answer: FC<Props> = ({ data, onDelete }) => (
   <div
     css={css`

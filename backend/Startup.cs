@@ -45,7 +45,7 @@ namespace QandA
             {
                 upgrader.PerformUpgrade();
             }
-		
+
             services.AddControllers();
 
             services.AddScoped<IDataRepository, DataRepository>();
@@ -57,6 +57,8 @@ namespace QandA
 
             services.AddMemoryCache();
             services.AddSingleton<IQuestionCache, QuestionCache>();
+            /* add cache */
+            services.AddSingleton<IAnswerCache, AnswerCache>();
 
             services.AddAuthentication(options =>
             {
