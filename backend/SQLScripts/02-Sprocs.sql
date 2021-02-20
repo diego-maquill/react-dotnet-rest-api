@@ -124,6 +124,15 @@ BEGIN
 	FROM dbo.Question 
 END
 GO
+CREATE PROC dbo.Answer_GetMany
+AS
+BEGIN
+	SET NOCOUNT ON
+
+	SELECT AnswerId, QuestionId, Content, UserId, UserName, Created
+	FROM dbo.Answer 
+END
+GO
 
 CREATE PROC dbo.Question_GetMany_BySearch
 	(

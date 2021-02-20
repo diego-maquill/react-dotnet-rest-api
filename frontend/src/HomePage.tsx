@@ -12,7 +12,6 @@ import { useAuth } from './Auth';
 import "./Style/HomePage.css";
 import "./Style/search.css"
 //import { SearchBody, SearchWithRouter as Search } from './Searchbody'
-
 export const HomePage: FC<RouteComponentProps> = ({ history, location }) => {
 
   const searchParams1 = new URLSearchParams(location.search);
@@ -28,7 +27,6 @@ export const HomePage: FC<RouteComponentProps> = ({ history, location }) => {
     e.preventDefault();
     history.push(`/search?criteria=${search1}`);
   };
-
   ////////////////////////////////////////////////////////////////
 
   const [questions, setQuestions] = useState<QuestionData[] | null>(null);

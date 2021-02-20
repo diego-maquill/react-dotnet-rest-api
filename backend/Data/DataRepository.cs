@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 using Dapper;
 using QandA.Data.Models;
 using static Dapper.SqlMapper;
+using NuJson = System.Text.Json.JsonSerializer;
+using static System.Console;
+using static System.Environment;
+using static System.IO.Path;
+using System.IO;                      // FileStream
 
 namespace QandA.Data
 {
@@ -17,6 +22,27 @@ namespace QandA.Data
         public DataRepository(IConfiguration configuration)
         {
             _connectionString = configuration["ConnectionStrings:DefaultConnection"];
+        }
+        public async Task<List<InitialApiMessage>> InitialMessage()
+        {
+            string jsonPath = Combine(CurrentDirectory, "message.json");
+
+            using (FileStream jsonLoad = File.Open(jsonPath, FileMode.Open))
+            {
+                var loadedMessage = (List<InitialApiMessage>)
+                await NuJson.DeserializeAsync(
+                    utf8Json: jsonLoad,
+                    returnType: typeof(List<InitialApiMessage>));
+                return loadedMessage;
+            }
+        }
+        public async Task<IEnumerable<QuestionGetManyResponse>> GetQuestions()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                return await connection.QueryAsync<QuestionGetManyResponse>("EXEC dbo.Question_GetMany");
+            }
         }
 
         public async Task<AnswerGetResponse> GetAnswer(int answerId)
@@ -70,14 +96,7 @@ namespace QandA.Data
             }
         }
         /////
-        public async Task<IEnumerable<QuestionGetManyResponse>> GetQuestions()
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                return await connection.QueryAsync<QuestionGetManyResponse>("EXEC dbo.Question_GetMany");
-            }
-        }
+
 
 
         public async Task<IEnumerable<QuestionGetManyResponse>> GetQuestionsWithAnswers()
@@ -130,14 +149,14 @@ namespace QandA.Data
             }
         }
 
-        public async Task<IEnumerable<QuestionGetManyResponse>> GetUnansweredQuestions()
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                return await connection.QueryAsync<QuestionGetManyResponse>("EXEC dbo.Question_GetUnanswered");
-            }
-        }
+        /*         public async Task<IEnumerable<QuestionGetManyResponse>> GetUnansweredQuestions()
+                {
+                    using (var connection = new SqlConnection(_connectionString))
+                    {
+                        await connection.OpenAsync();
+                        return await connection.QueryAsync<QuestionGetManyResponse>("EXEC dbo.Question_GetUnanswered");
+                    }
+                } */
 
         public async Task<IEnumerable<QuestionGetManyResponse>> GetUnansweredQuestionsAsync()
         {

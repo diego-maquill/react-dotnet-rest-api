@@ -12,14 +12,13 @@ using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using System.Text.Json;
-
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace QandA.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QuestionsController : ControllerBase
+    //public class QuestionsController : ControllerBase
+    public class QandAController : ControllerBase
     {
         private readonly IDataRepository _dataRepository;
         private readonly IHubContext<QuestionsHub> _questionHubContext;
@@ -29,7 +28,7 @@ namespace QandA.Controllers
         ///
       //  private readonly IAnswerCache _cacheAnswer;
 
-        public QuestionsController(IDataRepository dataRepository, IHubContext<QuestionsHub> questionHubContext, IQuestionCache questionCache, IHttpClientFactory clientFactory, IConfiguration configuration/*, IAnswerCache answerCache*/)
+        public QandAController(IDataRepository dataRepository, IHubContext<QuestionsHub> questionHubContext, IQuestionCache questionCache, IHttpClientFactory clientFactory, IConfiguration configuration/*, IAnswerCache answerCache*/)
         {
             _dataRepository = dataRepository;
             _questionHubContext = questionHubContext;
@@ -39,8 +38,13 @@ namespace QandA.Controllers
             ///
         //    _cacheAnswer = answerCache;
         }
-
         [HttpGet]
+        public async Task<List<InitialApiMessage>> InitialMessage()
+        {
+            return await _dataRepository.InitialMessage();
+        }
+        [HttpGet("questions")]
+        //[HttpGet]
         public async Task<IEnumerable<QuestionGetManyResponse>> GetQuestions(string search, bool includeAnswers, int page = 1, int pageSize = 20)
         {
             if (string.IsNullOrEmpty(search))
@@ -59,26 +63,7 @@ namespace QandA.Controllers
                 return await _dataRepository.GetQuestionsBySearchWithPaging(search, page, pageSize);
             }
         }
-        [HttpGet("all-answers")]
-        public async Task<IEnumerable<AnswerGetManyResponse>> GetAnswers(string search, int page = 1, int pageSize = 20)
-        {
-            if (string.IsNullOrEmpty(search))
-            {
-                return await _dataRepository.GetAnswers(); ;
-                //       return await _dataRepository.GetQuestions();
-            }
-            else
-            {
-                return await _dataRepository.GetAnswersBySearchWithPaging(search, page, pageSize);
-            }
-        }
-        [HttpGet("unanswered")]
-        public async Task<IEnumerable<QuestionGetManyResponse>> GetUnansweredQuestions()
-        {
-            return await _dataRepository.GetUnansweredQuestionsAsync();
-        }
-
-        [HttpGet("{questionId}")]
+        [HttpGet("questions/{questionId}")]
         public async Task<ActionResult<QuestionGetSingleResponse>> GetQuestion(int questionId)
         {
             var question = _cache.Get(questionId);
@@ -93,7 +78,24 @@ namespace QandA.Controllers
             }
             return question;
         }
-
+        //   [Route("all-answers")]
+        [HttpGet("all-answers")]
+        public async Task<IEnumerable<AnswerGetManyResponse>> GetAnswers(string search, int page = 1, int pageSize = 20)
+        {
+            if (string.IsNullOrEmpty(search))
+            {
+                return await _dataRepository.GetAnswers();
+            }
+            else
+            {
+                return await _dataRepository.GetAnswersBySearchWithPaging(search, page, pageSize);
+            }
+        }
+        [HttpGet("unanswered-questions")]
+        public async Task<IEnumerable<QuestionGetManyResponse>> GetUnansweredQuestions()
+        {
+            return await _dataRepository.GetUnansweredQuestionsAsync();
+        }
         /*         [HttpGet("{answerId}")]
                 public async Task<ActionResult<AnswerGetResponse>> GetAnswer(int answerId)
                 {

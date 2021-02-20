@@ -38,7 +38,7 @@ namespace BackendTests
             mockConfigurationRoot.SetupGet(config =>
                 config[It.IsAny<string>()]).Returns("some setting");
 
-            var questionsController = new QuestionsController(
+            var questionsController = new QandAController(
                 mockDataRepository.Object, null,
                 null, null, mockConfigurationRoot.Object);
 
@@ -70,7 +70,7 @@ namespace BackendTests
             mockConfigurationRoot.SetupGet(config =>
                 config[It.IsAny<string>()]).Returns("some setting");
 
-            var questionsController = new QuestionsController(
+            var questionsController = new QandAController(
                 mockDataRepository.Object, null,
                 null, null, mockConfigurationRoot.Object);
 
@@ -97,7 +97,7 @@ namespace BackendTests
             mockConfigurationRoot.SetupGet(config =>
                 config[It.IsAny<string>()]).Returns("some setting");
 
-            var questionsController = new QuestionsController(
+            var questionsController = new QandAController(
                 mockDataRepository.Object, null, mockQuestionCache.Object,
                 null, mockConfigurationRoot.Object);
 
@@ -130,7 +130,7 @@ namespace BackendTests
             mockConfigurationRoot.SetupGet(config =>
                 config[It.IsAny<string>()]).Returns("some setting");
 
-            var questionsController = new QuestionsController(
+            var questionsController = new QandAController(
                 mockDataRepository.Object, null, mockQuestionCache.Object,
                 null, mockConfigurationRoot.Object);
 

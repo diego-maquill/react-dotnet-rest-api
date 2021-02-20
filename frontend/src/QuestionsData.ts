@@ -58,7 +58,7 @@ export const mapAnswerFromServer = (
 export const getUnansweredQuestions = async (): Promise<QuestionData[]> => {
   try {
     const result = await http<undefined, QuestionDataFromServer[]>({
-      path: '/questions/unanswered',
+      path: '/qanda/unanswered-questions',
     });
     if (result.parsedBody) {
       return result.parsedBody.map(mapQuestionFromServer);
@@ -75,7 +75,7 @@ export const getQuestion = async (
 ): Promise<QuestionData | null> => {
   try {
     const result = await http<undefined, QuestionDataFromServer>({
-      path: `/questions/${questionId}`,
+      path: `/qanda/questions/${questionId}`,
     });
     if (result.ok && result.parsedBody) {
       return mapQuestionFromServer(result.parsedBody);
@@ -92,7 +92,7 @@ export const searchQuestions = async (
 ): Promise<QuestionData[]> => {
   try {
     const result = await http<undefined, QuestionDataFromServer[]>({
-      path: `/questions?search=${criteria}`,
+      path: `/qanda/questions?search=${criteria}`,
     });
     if (result.ok && result.parsedBody) {
       return result.parsedBody.map(mapQuestionFromServer);
@@ -128,7 +128,7 @@ export const postQuestion = async (
   const accessToken = await getAccessToken();
   try {
     const result = await http<PostQuestionData, QuestionDataFromServer>({
-      path: '/questions',
+      path: '/qanda/questions',
       method: 'post',
       body: question,
       accessToken,
@@ -148,7 +148,7 @@ export const postAnswer = async (
   const accessToken = await getAccessToken();
   try {
     const result = await http<PostAnswerData, AnswerData>({
-      path: '/questions/answer',
+      path: '/qanda/answer',
       method: 'post',
       body: answer,
       accessToken,

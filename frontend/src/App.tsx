@@ -51,7 +51,7 @@ const App: React.FC = () => {
               path="/signout-callback"
               render={() => <SignOutPage action="signout-callback" />}
             />
-            <Route path="/questions/:questionId" component={QuestionPage} />
+            <Route path="/qanda/questions/:questionId" component={QuestionPage} />
             <Route component={NotFoundPage} />
           </Switch>
         </div>

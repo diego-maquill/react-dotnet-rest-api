@@ -16,7 +16,7 @@ export const Question: FC<Props> = ({ data, showContent = true }) => (
     <div id="box2" >
       <Link
         id="box3"
-        to={`questions/${data.questionId}`} >
+        to={`qanda/questions/${data.questionId}`} >
         {data.title}
       </Link>
     </div>
